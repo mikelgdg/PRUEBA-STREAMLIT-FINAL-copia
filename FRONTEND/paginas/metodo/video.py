@@ -40,6 +40,73 @@ def limpiar_carpeta(nombre_carpeta):
         print(f"❌ Error al limpiar la carpeta '{nombre_carpeta}': {e}")
 
 
+
+    
+import os
+import subprocess
+
+import os
+import subprocess
+import platform
+import glob
+
+def get_ffmpeg_path():
+    if platform.system() == "Windows":
+        # Ruta relativa al ffmpeg.exe si lo incluyes en tu proyecto
+        posible_ruta = os.path.join("ffmpeg", "ffmpeg.exe")
+        if os.path.exists(posible_ruta):
+            return posible_ruta
+        else:
+            return "ffmpeg"  # Requiere que esté en el PATH
+    else:
+        return "ffmpeg"  # macOS/Linux
+
+def montar_video_desde_frames(carpeta_frames, nombre_output="video_resultado.mp4", fps=4):
+    output_path = os.path.join(carpeta_frames, nombre_output)
+    print(f"Output path: {output_path}")
+    
+    if os.path.exists(output_path):
+        os.remove(output_path)
+        print(f"Eliminado archivo existente: {output_path}")
+
+    # Verifica si hay frames antes de correr ffmpeg
+    frames = glob.glob(os.path.join(carpeta_frames, "frame_proc_*.jpg"))
+    if not frames:
+        print("❌ No se encontraron frames para generar el video.")
+        return None
+
+    try:
+        input_pattern = os.path.join(carpeta_frames, "frame_proc_%04d.jpg")
+        print(f"Input pattern: {input_pattern}")
+
+        ffmpeg_cmd = get_ffmpeg_path()
+
+        result = subprocess.run([
+            ffmpeg_cmd, "-y",
+            "-framerate", str(fps),
+            "-i", input_pattern,
+            "-c:v", "libx264",
+            "-pix_fmt", "yuv420p",
+            output_path
+        ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        print("STDOUT:\n", result.stdout)
+        print("STDERR:\n", result.stderr)
+
+        if result.returncode != 0:
+            print(f"❌ Error al ejecutar ffmpeg (code {result.returncode})")
+            return None
+
+        print(f"✅ Video creado correctamente en: {output_path}")
+        return output_path
+
+    except Exception as e:
+        print(f"⚠ Error general: {e}")
+        return None
+
+
+    
+
 def convertir_a_h264(video_input_path):
     output_path = video_input_path.replace(".mp4", "_h264.mp4")
     if os.path.exists(output_path):
@@ -58,34 +125,7 @@ def convertir_a_h264(video_input_path):
         st.error(f"Error al convertir a H.264: {e}")
         return video_input_path
     
-import os
-import subprocess
 
-def montar_video_desde_frames(carpeta_frames, nombre_output="video_resultado.mp4", fps=4):
-    output_path = os.path.join(carpeta_frames, nombre_output)
-    
-    if os.path.exists(output_path):
-        os.remove(output_path)  # Elimina el archivo existente si ya existe
-        #return output_path #ESTO MIRAR!!!
-
-    try:
-        # Usa patrón numérico para leer los frames ordenados
-        input_pattern = os.path.join(carpeta_frames, "frame_proc_%04d.jpg")
-
-        subprocess.run([
-            "ffmpeg", "-y",
-            "-framerate", str(fps),
-            "-i", input_pattern,
-            "-c:v", "libx264",
-            "-pix_fmt", "yuv420p",
-            output_path
-        ], check=True)
-
-        return output_path
-
-    except Exception as e:
-        st.error(f"Error al crear video desde frames: {e}")
-        return None
 
 with st.container():
     col1, space, col2 = st.columns([1.5, 0.1, 0.8])
@@ -250,6 +290,7 @@ if mostrar_resultados:
 
                 if response.status_code == 200:
                     data = response.json()
+                    print(f"Response data: {data}")
                     data_informe_completa = data.get("data_informe_completa", [])
             
                     zona_final = zona_json if zona_json else zona_canvas
@@ -262,7 +303,9 @@ if mostrar_resultados:
 
                     elif "frames_resultados" in data and "carpeta_resultados" in data:
                         carpeta_frames = data["carpeta_resultados"]
+                        print(f"Carpeta de frames: {carpeta_frames}")
                         video_path = montar_video_desde_frames(carpeta_frames)
+                        print(f"Video path: {video_path}")
                         
                         if video_path:
                             video_resultado = convertir_a_h264(video_path)
@@ -274,7 +317,7 @@ if mostrar_resultados:
                         st.warning("⚠️ El servidor no devolvió un resultado de video esperado.")
 
                     limpiar_carpeta(carpeta_subidas)
-                    limpiar_carpeta(carpeta_resultados)
+                    #limpiar_carpeta(carpeta_resultados)
 
             except Exception as e:
                 st.error(f"❌ Error inesperado: {e}")
@@ -283,7 +326,7 @@ if mostrar_resultados:
         with col1:
             mensaje_informe = ""
             st.subheader("Informe de resultados:")
-            print(f"Data informe completa: {data_informe_completa}")
+            #print(f"Data informe completa: {data_informe_completa}")
             if data_informe_completa:
                 for frame in data_informe_completa:
                     for item in frame:
