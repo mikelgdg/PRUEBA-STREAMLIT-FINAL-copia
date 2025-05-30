@@ -7,6 +7,7 @@ import json
 import requests
 import os
 
+
 dibujo_hecho = False
 json_subido = False  # ✅ NUEVO
 
@@ -32,11 +33,11 @@ def limpiar_carpeta(nombre_carpeta):
                     os.unlink(archivo_path)
                 elif os.path.isdir(archivo_path):
                     shutil.rmtree(archivo_path)
-            print(f"🧹 Carpeta '{nombre_carpeta}' limpiada correctamente.")
+            print(f"Carpeta '{nombre_carpeta}' limpiada correctamente.")
         else:
-            print(f"📁 La carpeta '{nombre_carpeta}' no existe.")
+            print(f"La carpeta '{nombre_carpeta}' no existe.")
     except Exception as e:
-        print(f"❌ Error al limpiar la carpeta '{nombre_carpeta}': {e}")
+        print(f"Error al limpiar la carpeta '{nombre_carpeta}': {e}")
 
 limpiar_carpeta(carpeta_resultados)
 

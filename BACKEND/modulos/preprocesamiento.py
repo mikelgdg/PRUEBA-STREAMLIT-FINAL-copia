@@ -6,6 +6,8 @@ from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 
 
+
+
 TAMANIO_OBJETIVO = (640, 640)
 FPS_OBJETIVO = 4
 

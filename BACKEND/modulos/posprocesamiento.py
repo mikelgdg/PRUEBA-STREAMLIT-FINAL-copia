@@ -4,6 +4,8 @@ import os
 from ultralytics import YOLO
 from shapely.geometry import Polygon, Point
 
+
+
 # --- Configuración global ---
 CLASES = {
     0: 'Persona', 1: 'Oreja', 2: 'Orejeras', 3: 'Cara', 4: 'Protector-cara',

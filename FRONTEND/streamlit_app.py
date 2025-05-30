@@ -55,7 +55,7 @@ def login():
         st.session_state.login_failed = False
 
     if st.button("Iniciar sesión"):
-        if username == "admin" and password == "4dm1n1s7R4d0R":
+        if username == "admin" and password == "ONSL":
             st.session_state.logged_in = True
             st.session_state.login_failed = False
         else:

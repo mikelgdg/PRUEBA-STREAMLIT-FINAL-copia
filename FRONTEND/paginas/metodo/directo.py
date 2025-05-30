@@ -7,6 +7,7 @@ import json
 import requests
 import os
 
+
 dibujo_hecho = False
 json_subido = False
 informee = ""

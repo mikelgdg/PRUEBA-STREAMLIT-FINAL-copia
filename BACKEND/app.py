@@ -16,6 +16,8 @@ from BACKEND.modulos.posprocesamiento import posprocesamiento
 from BACKEND.modulos.camara import get_frame
 
 
+
+
 app = FastAPI()
 
 app.add_middleware(

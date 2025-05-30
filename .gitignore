@@ -12,3 +12,9 @@ venv/
 
 # OS files
 .DS_Store
+
+.build/
+
+.dist
+
+.ffmpeg

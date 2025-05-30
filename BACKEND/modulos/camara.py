@@ -15,6 +15,7 @@ from BACKEND.modulos.config import carpeta_salidas
 
 
 
+
 def get_frame(clases_permitidas=None, grabar=False,zona=[]):
     video = cv2.VideoCapture(0)
     nombre_archivo = f"{carpeta_salidas}/deteccion_vivo_{uuid.uuid4().hex[:8]}.mp4"

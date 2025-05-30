@@ -9,6 +9,7 @@ import subprocess
 import os
 import time
 
+
 dibujo_hecho = False
 json_subido = False
 zona_json = []
@@ -33,11 +34,11 @@ def limpiar_carpeta(nombre_carpeta):
                     os.unlink(archivo_path)
                 elif os.path.isdir(archivo_path):
                     shutil.rmtree(archivo_path)
-            print(f"🧹 Carpeta '{nombre_carpeta}' limpiada correctamente.")
+            print(f"Carpeta '{nombre_carpeta}' limpiada correctamente.")
         else:
-            print(f"📁 La carpeta '{nombre_carpeta}' no existe.")
+            print(f"La carpeta '{nombre_carpeta}' no existe.")
     except Exception as e:
-        print(f"❌ Error al limpiar la carpeta '{nombre_carpeta}': {e}")
+        print(f"Error al limpiar la carpeta '{nombre_carpeta}': {e}")
 
 
 
@@ -94,26 +95,28 @@ def montar_video_desde_frames(carpeta_frames, nombre_output="video_resultado.mp4
         print("STDERR:\n", result.stderr)
 
         if result.returncode != 0:
-            print(f"❌ Error al ejecutar ffmpeg (code {result.returncode})")
+            print(f"Error al ejecutar ffmpeg (code {result.returncode})")
             return None
 
-        print(f"✅ Video creado correctamente en: {output_path}")
+        print(f"Video creado correctamente en: {output_path}")
         return output_path
 
     except Exception as e:
-        print(f"⚠ Error general: {e}")
+        print(f"Error general: {e}")
         return None
 
 
     
 
 def convertir_a_h264(video_input_path):
+
+    ffmpeg_cmd = get_ffmpeg_path()
     output_path = video_input_path.replace(".mp4", "_h264.mp4")
     if os.path.exists(output_path):
          os.remove(output_path)
     try:
         subprocess.run([
-            "ffmpeg", "-y",
+            ffmpeg_cmd, "-y",
             "-i", video_input_path,
             "-vcodec", "libx264",
             "-acodec", "aac",

@@ -2,6 +2,7 @@ from ultralytics import YOLO
 from typing import List, Union
 import os
 
+
 # ==================== CARGA DEL MODELO ====================
 modelo = YOLO("BACKEND/modelo/MODELO.pt")  # Ruta al modelo YOLOv12n, asegúrate de tenerlo descargado
 
